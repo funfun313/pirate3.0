@@ -1,7 +1,28 @@
 from tkinter import *
 import firebasemanager
-
+import newpirate
+window2 = ""
+def newpiratebutton():
+    global window2
+    window2 = Toplevel()
+    newpirate.loadwindow(window2)
 window1 = Tk()
+def listdelete():
+    index = int(listbox.curselection()[0])
+    piratename = listbox.get(index)
+    deletekey = ""
+    for pirate in d:
+        if d[pirate]["name"] == piratename:
+            deletekey = pirate
+    fm.deletepirate(deletekey)
+    d.pop(deletekey)
+    filt = searchbox.get()
+    listbox.delete(0, "end") #this is the listbox
+
+    for pirate in d:
+        if filt.lower() in d[pirate]["name"].lower():
+            listbox.insert(END, d[pirate]["name"])
+    
 def dofilter(e):
     filt = searchbox.get()
     listbox.delete(0, "end") #this is the listbox
@@ -29,19 +50,28 @@ def display(pirate_id):
     else:
         fict.config(text = "Not Fictional")
 def scrollright():
-    index = int(listbox.curselection()[0])
-    listbox.selection_clear(index)
-    if index == len(d)-1:
+    try:
+        index = int(listbox.curselection()[0])
+        listbox.selection_clear(index)
+        if index == len(d)-1:
+            update_listbox(0)
+        else:
+            update_listbox(index + 1)
+    except:
+        index = 0
         update_listbox(0)
-    else:
-        update_listbox(index + 1)
+
 def scrollleft():
-    index = int(listbox.curselection()[0])
-    listbox.selection_clear(index)
-    if index == 0:
-        update_listbox(len(d)-1)
-    else:
-        update_listbox(index - 1)
+    try:
+        index = int(listbox.curselection()[0])
+        listbox.selection_clear(index)
+        if index == 0:
+            update_listbox(listbox.size()-1)
+        else:
+            update_listbox(index - 1)
+    except:
+        update_listbox(listbox.size()-1)
+        
 
 def update_listbox(index):
     listbox.selection_set(index)
@@ -79,17 +109,19 @@ fict.grid(row=3,column=1)
 #frame4
 frame4= Frame(window1)
 listbox = Listbox(frame4, font="Arial 20")
-listbox.grid(row=0,column=0, columnspan=2)
+listbox.grid(row=0,column=0, columnspan=3)
 listbox.bind("<<ListboxSelect>>", onselect)
     #retrieve pirates from dictionarys
 fm = firebasemanager.FirebaseManager()
 d = fm.getallpirates()
 for item in d:
     listbox.insert(END, d[item]["name"])
-new =Button(frame4, text="New", font="Arial 20")
+new =Button(frame4, text="New", font="Arial 20", command = newpiratebutton)
 new.grid(row=1,column=0)
+deleteme =Button(frame4, text="Delete", font="Arial 20", command = listdelete)
+deleteme.grid(row=1,column=1)
 quitme =Button(frame4, text="Quit", font="Arial 20")
-quitme.grid(row=1,column=1)
+quitme.grid(row=1,column=2)
     
 #grid the frames into the window
 frame1.grid(row=0,column=0)
