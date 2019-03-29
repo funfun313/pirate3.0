@@ -79,7 +79,12 @@ def update_listbox(index):
     for p in d:
          if d[p]["name"].lower() == piratename.lower():
                display(p)
-    
+def refreshlist():
+    global d
+    d = fm.getallpirates()
+    listbox.delete(0, "end")
+    for item in d:
+        listbox.insert(END, d[item]["name"])
 #frame1
 frame1= Frame(window1)
 title =Label(frame1,text="Pirate Database", font="Arial 20")
@@ -109,7 +114,7 @@ fict.grid(row=3,column=1)
 #frame4
 frame4= Frame(window1)
 listbox = Listbox(frame4, font="Arial 20")
-listbox.grid(row=0,column=0, columnspan=3)
+listbox.grid(row=0,column=0, columnspan=4)
 listbox.bind("<<ListboxSelect>>", onselect)
     #retrieve pirates from dictionarys
 fm = firebasemanager.FirebaseManager()
@@ -122,6 +127,8 @@ deleteme =Button(frame4, text="Delete", font="Arial 20", command = listdelete)
 deleteme.grid(row=1,column=1)
 quitme =Button(frame4, text="Quit", font="Arial 20")
 quitme.grid(row=1,column=2)
+refreshme =Button(frame4, text="Refresh", font="Arial 20", command = refreshlist)
+refreshme.grid(row=1,column=3)
     
 #grid the frames into the window
 frame1.grid(row=0,column=0)
