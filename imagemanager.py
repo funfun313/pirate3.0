@@ -12,7 +12,7 @@ class ImageManager:
     url = ""
     
     def uploadImage(self):
-        imageBlob = bucket.blob("images/" + self.imagepath)
+        imageBlob = self.bucket.blob("images/" + os.path.basename(self.imagepath))
         imageBlob.upload_from_filename(self.imagepath)
         d = datetime.datetime(2040,1,1)
         self.url = imageBlob.generate_signed_url(d)
