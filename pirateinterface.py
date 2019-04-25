@@ -1,7 +1,10 @@
 from tkinter import *
 import firebasemanager
+import imagemanager
 import newpirate
+
 window2 = ""
+
 def newpiratebutton():
     global window2
     window2 = Toplevel()
@@ -49,6 +52,23 @@ def display(pirate_id):
         fict.config(text = "Fictional")
     else:
         fict.config(text = "Not Fictional")
+    im = imagemanager.ImageManager()
+    try:
+        im.url = d[pirate_id]["image"]
+    except:
+        pass
+
+    #if we got a image, display it
+    if im.url != "":
+        img = im.downloadImage()
+        pic.config(image = img)
+        pic.image = img
+    else:
+        
+        pic.config(image = placeholder)
+       
+
+        
 def scrollright():
     try:
         index = int(listbox.curselection()[0])
@@ -103,7 +123,8 @@ name =Label(frame3, text="Name", font="Arial 20")
 name.grid(row=0,column=1)
 arrow1 =Button(frame3, text="<", font="Arial 20", command = scrollleft)
 arrow1.grid(row=1,column=0)
-pic =Label(frame3, text="picture", font="Arial 16", padx=100)
+placeholder = PhotoImage("pirate2.gif")
+pic =Label(frame3, padx=100, image = placeholder)
 pic.grid(row=1,column=1)
 arrow2 =Button(frame3, text=">", font="Arial 20", command = scrollright)
 arrow2.grid(row=1,column=2)
